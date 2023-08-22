@@ -70,7 +70,7 @@ class UserController extends Controller
 
     function sendOTPCode(Request $request){
         $email = $request->input('email');
-        $otp = rand(1000, 9999);
+        $otp = rand(100000, 999999);
 
         $isUser = User::where('email', '=', $email)
             ->count();
@@ -91,7 +91,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 'Success',
-                'message' => '4 digit OTP Code Sent to Your Email'
+                'message' => '6 digit OTP Code Sent to Your Email'
             ], 200);
 
 
