@@ -11,22 +11,35 @@ class UserController extends Controller
 {
     public function userRegistration(Request $request) {
         try {
-            User::create([
-                'firstName' => $request->input('firstName'),
-                'lastName' => $request->input('lastName'),
-                'email' => $request->input('email'),
-                'mobile' => $request->input('mobile'),
-                'password' => $request->input('password'),
-            ]);
 
-            return response()->json([
-                'success' => 'Success',
-                'message' => 'User Registration Successful'
-            ], 200);
+            $isUser = User::where('email', '=', $request->input('email'))
+                ->count();
+
+            if($isUser == 1){
+                return response()->json([
+                    'success' => 'Failed',
+                    'message' => 'User Already Exists'
+                ], 404);
+
+            }else{
+                User::create([
+                    'firstName' => $request->input('firstName'),
+                    'lastName' => $request->input('lastName'),
+                    'email' => $request->input('email'),
+                    'mobile' => $request->input('mobile'),
+                    'password' => $request->input('password'),
+                ]);
+
+                return response()->json([
+                    'success' => 'Success',
+                    'message' => 'User Registration Successful'
+                ], 200);
+            }
+
         }
         catch (Exception $e){
             return response()->json([
-                'success' => 'Failed',
+                'status' => 'Failed',
                 'message' => 'User Registration Failed'
             ], 404);
         }
