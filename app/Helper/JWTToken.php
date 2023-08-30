@@ -8,17 +8,30 @@ use PHPUnit\Exception;
 
 class JWTToken
 {
-     public static function createToken($userEmail):string
+     public static function createToken($email)
     {
         $key = env('JWT_KEY');
         $payload = array(
             "iss" => "laravel-token",
             "iat" => time(),
             "exp" => time() + 60 * 60,
-            "userEmail" => $userEmail,
+            "userEmail" => $email,
         );
         return JWT::encode($payload, $key, 'HS256');
     }
+
+    public static function createTokenForSetPassword($email)
+    {
+        $key = env('JWT_KEY');
+        $payload = array(
+            "iss" => "laravel-token",
+            "iat" => time(),
+            "exp" => time() + 60 * 10,
+            "userEmail" => $email,
+        );
+        return JWT::encode($payload, $key, 'HS256');
+    }
+
 
     public static function verifyToken($token)
     {
@@ -27,7 +40,7 @@ class JWTToken
             $decode = JWT::decode($token, new Key($key, 'HS256'));
             return $decode->userEmail;
         }catch (Exception $e){
-            return 'Invalid Token';
+            return 'Unauthorized';
         }
     }
 
